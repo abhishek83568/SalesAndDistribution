@@ -1,0 +1,45 @@
+.notification-settings {
+  margin: 5px; /* Remove auto margin to avoid centering */
+  padding: 30px;
+  border: 1px solid #cbc0c0;
+  position: absolute;
+  top: 65px; /* Distance from the top */
+  right: 0; /* Distance from the right */
+  width: 373px;
+}
+
+.notification-settings h1 {
+  text-align: center;
+  color: #000000;
+  font-size: 1.5em;
+  margin-bottom: 35px;
+}
+
+.section {
+  margin-bottom: 15px;
+}
+
+.section h2 {
+  color: #1d1d1d;
+  border-bottom: 2px solid #4f46e5;
+  padding-bottom: 8px;
+  font-size: 1.4em;
+  margin-bottom: 10px;
+}
+
+.setting {
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space between label and checkbox */
+  align-items: center; /* Vertically center items */
+  margin: 15px ; /* Adjust margin for better spacing */
+}
+
+.setting label {
+  color: #1c1c1c;
+  font-size: 1rem;
+}
+
+.setting input[type="checkbox"] {
+  cursor: pointer;
+  margin-left: auto; /* Push checkbox to the right */
+}
