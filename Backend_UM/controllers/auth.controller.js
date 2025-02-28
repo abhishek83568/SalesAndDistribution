@@ -35,3 +35,21 @@ exports.logout = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const data = await authService.forgotPassword(req.body);
+    res.status(200).json({ message: "Reset link sent to email" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    await authService.resetPassword(req.body);
+    res.status(200).json({ message: "Password reset successfully!" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

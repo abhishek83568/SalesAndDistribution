@@ -141,6 +141,7 @@ import Login from "./Login/Login";
 import ProtectedRoute from "./Login/ProtectedRoute";
 import SignUp from "./Login/SignUp";
 import ForgotPassword from "./Login/ForgotPassword";
+import ResetPassword from "./Login/ResetPassword";
 function App() {
   return (
     <BrowserRouter>
@@ -148,6 +149,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/"
           element={

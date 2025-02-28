@@ -12,23 +12,21 @@ import CollaborationProvider from "./contexts/CollaborationContext.jsx";
 import AuthProvider from "./contexts/AuthContext.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <TipsProvider>
-      <TipsPageHeaderProvider>
-        <FormPageHeaderProvider>
-          <DataProvider>
-            <ProfileProvider>
-              <NotificationProvider>
-                <CollaborationProvider>
-                  <AuthProvider>
-                    <App />
-                  </AuthProvider>
-                </CollaborationProvider>
-              </NotificationProvider>
-            </ProfileProvider>
-          </DataProvider>
-        </FormPageHeaderProvider>
-      </TipsPageHeaderProvider>
-    </TipsProvider>
-  </StrictMode>
+  <TipsProvider>
+    <TipsPageHeaderProvider>
+      <FormPageHeaderProvider>
+        <DataProvider>
+          <ProfileProvider>
+            <NotificationProvider>
+              <CollaborationProvider>
+                <AuthProvider>
+                  <App />
+                </AuthProvider>
+              </CollaborationProvider>
+            </NotificationProvider>
+          </ProfileProvider>
+        </DataProvider>
+      </FormPageHeaderProvider>
+    </TipsPageHeaderProvider>
+  </TipsProvider>
 );

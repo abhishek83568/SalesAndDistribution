@@ -1,104 +1,127 @@
-// src/components/SignUp.js
-import './login.css';
-import { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../contexts/AuthContext";
-import galvinusLogo from "../assets/galvinus_logo.jpeg"
+import "./login.css";
+import { useState } from "react";
+import galvinusLogo from "../assets/galvinus_logo.jpeg";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const SignUp = () => {
-  useEffect(() => {
-    document.body.classList.add('login-page');
-    return () => {
-      document.body.classList.remove('login-page');
-    };
-  }, []);
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [error, setError] = useState("");
-  const { register } = useContext(AuthContext);
-
-  const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return passwordRegex.test(password);
-  };
+  const navigate = useNavigate();
+  const [register, setRegister] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+  });
+  const [emailError, setEmailError] = useState("");
+  const [error, setError] = useState(""); // State to store error message
 
   const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex =
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|net|org|gov|edu|co)$/;
     return emailRegex.test(email);
   };
 
-  const validatePhoneNumber = (phoneNumber) => {
-    const phoneRegex = /^\d{10}$/;
-    return phoneRegex.test(phoneNumber);
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+
+    setRegister((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError(""); // Clear error when typing
+    setEmailError("");
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (!name) {
-      setError("Name is required");
+  const registerUser = async (event) => {
+    event.preventDefault();
+    // Validate email format before sending request
+    if (!validateEmail(register.email)) {
+      setEmailError(
+        "Please enter a valid email address ending with .com, .in, .org, etc."
+      );
       return;
-    }
-
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address");
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      setError("Password must be at least 8 characters long, contain at least 1 number, 1 special character, and 1 capital letter");
-      return;
-    }
-
-    if (!validatePhoneNumber(phoneNumber)) {
-      setError("Phone number must be 10 digits");
-      return;
-    }
-
-    if (register(email, password)) {
-      alert("Registration successful!");
     } else {
-      alert("Registration failed");
+      setEmailError(""); // Clear error if email is valid
+    }
+
+    try {
+      const response = await fetch("http://localhost:8799/api/auth/register", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          name: register.name,
+          email: register.email,
+          password: register.password,
+          phoneNumber: register.phoneNumber,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
+      }
+      toast.success("User registered successfully!");
+      setRegister({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        password: "",
+      });
+      setError(""); // Clear error after successful signup
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } catch (error) {
+      setError(error.message); // Set error message from backend
     }
   };
 
   return (
     <div className="auth-form">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="logo-box">
-          <img src={galvinusLogo} alt="galvinus-logo" />
+        <img src={galvinusLogo} alt="galvinus-logo" />
       </div>
       <h2>Sales & Distribution Sign Up</h2>
-      {error && <p className="error">{error}</p>}
-      <form onSubmit={handleSubmit}>
+
+      <form onSubmit={registerUser}>
         <input
           type="text"
+          name="name"
           placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={register.name}
+          onChange={handleChange}
           required
         />
         <input
           type="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          value={register.email}
+          onChange={handleChange}
           required
         />
+        {emailError && <p className="error-message">{emailError}</p>}
         <input
           type="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          value={register.password}
+          onChange={handleChange}
           required
         />
+        {/* Show error message below password field */}
+        {error && <p className="error-message">{error}</p>}
+
         <input
-          type="text"
+          type="Number"
           placeholder="Phone Number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
+          name="phoneNumber"
+          value={register.phoneNumber}
+          onChange={handleChange}
           required
         />
         <button type="submit">Sign Up</button>

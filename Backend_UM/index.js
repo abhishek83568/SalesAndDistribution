@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const authRoutes = require("./routes/auth.route");
-
 const dotenv = require("dotenv");
 const cors = require("cors");
 
@@ -14,6 +13,8 @@ app.use(
     origin: "*",
   })
 );
+
+app.use(express.json());
 
 // Mount auth routes under /api/auth
 app.use("/api/auth", authRoutes);

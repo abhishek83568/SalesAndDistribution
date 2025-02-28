@@ -2,6 +2,8 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const { sendPasswordResetEmail } = require("./emailService");
 
 // Retrieve secrets from environment variables
 const ACCESS_TOKEN_SECRET =
@@ -37,7 +39,15 @@ exports.register = async ({ name, email, password, phoneNumber }) => {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   if (!passwordRegex.test(password)) {
     throw new Error(
-      "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character."
+      "Password must be at least 8 characters, one uppercase letter,lowercase letter,number, and a special character."
+    );
+  }
+
+  const emailRegex =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|net|org|gov|edu|co)$/;
+  if (!emailRegex.test(email)) {
+    throw new Error(
+      "Invalid email format. Email must end with .com, .in, .org, etc."
     );
   }
 
@@ -111,4 +121,94 @@ exports.logout = async ({ token }) => {
   // Remove the refresh token from the in-memory store
   refreshTokens = refreshTokens.filter((t) => t !== token);
   return;
+};
+
+exports.forgotPassword = async ({ email }) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Generate a reset token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Save reset token in database with expiration time (15 minutes)
+  await prisma.user.update({
+    where: { email },
+    data: {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: new Date(Date.now() + 15 * 60 * 1000),
+    },
+  });
+
+  // Send email with reset link
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}&email=${email}`;
+  await sendPasswordResetEmail(email, resetLink, resetToken, hashedToken);
+};
+
+// exports.resetPassword = async ({ token, email, newPassword }) => {
+//   const user = await prisma.user.findUnique({ where: { email } });
+//   if (!user) {
+//     throw new Error("Invalid token or email");
+//   }
+
+//   // Hash the received token and compare with stored one
+//   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+//   if (
+//     hashedToken !== user.resetPasswordToken ||
+//     user.resetPasswordExpires < new Date()
+//   ) {
+//     throw new Error("Token expired or invalid");
+//   }
+
+//   // Hash the new password
+//   const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+//   // Update user password and clear reset token fields
+//   await prisma.user.update({
+//     where: { email },
+//     data: {
+//       password: hashedPassword,
+//       resetPasswordToken: null,
+//       resetPasswordExpires: null,
+//     },
+//   });
+// };
+
+exports.resetPassword = async ({ token, newPassword }) => {
+  // Hash the received token (since it's stored hashed in the DB)
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  // Find the user by the hashed token
+  const user = await prisma.user.findFirst({
+    where: {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { gt: new Date() }, // Ensure token is not expired
+    },
+  });
+
+  if (!user) {
+    throw new Error("Token expired or invalid");
+  }
+
+  // Hash the new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Update user password and clear reset token fields
+  await prisma.user.update({
+    where: { userId: user.userId },
+    data: {
+      password: hashedPassword,
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
+    },
+  });
+
+  return { message: "Password reset successfully" };
 };

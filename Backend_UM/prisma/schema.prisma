@@ -14,5 +14,7 @@ model User{
   password String 
   phoneNumber String
   profilePic  String?
+  resetPasswordToken String? 
+  resetPasswordExpires DateTime?
 }
 
