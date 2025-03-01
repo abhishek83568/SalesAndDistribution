@@ -18,6 +18,28 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.editProfile = async (req, res) => {
+  try {
+  } catch (error) {}
+};
+
+// authController.js
+exports.getUser = async (req, res) => {
+  try {
+    // Pass the userId from the request (set by the auth middleware)
+    const user = await authService.getUser(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Return the user data in the response
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 exports.refreshToken = async (req, res) => {
   try {
     const tokens = await authService.refreshToken(req.body);

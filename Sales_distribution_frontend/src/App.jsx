@@ -142,6 +142,7 @@ import ProtectedRoute from "./Login/ProtectedRoute";
 import SignUp from "./Login/SignUp";
 import ForgotPassword from "./Login/ForgotPassword";
 import ResetPassword from "./Login/ResetPassword";
+import PrivateRoute from "./Login/ProtectedRoute";
 function App() {
   return (
     <BrowserRouter>
@@ -185,7 +186,14 @@ function App() {
           <Route path="/returnlineitems" element={<ReturnLineItemsPage />} />
           <Route path="/returnorder" element={<ReturnOrderPage />} />
 
-          <Route path="/home" element={<Homepage />} />
+          <Route
+            path="/home"
+            element={
+              <PrivateRoute>
+                <Homepage />
+              </PrivateRoute>
+            }
+          />
 
           <Route path="/createsalesorder" element={<CreateSalesOrderPage />} />
           <Route path="/editsalesorder" element={<EditSalesOrderPage />} />

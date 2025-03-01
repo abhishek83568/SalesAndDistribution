@@ -1,8 +1,8 @@
 import module from "./HomePage.module.css";
-import { useContext } from 'react';
-import { DataContext } from '../../contexts/DataContext';
-import { ProfileContext } from '../../contexts/ProfileContext';
-import { Clock } from 'lucide-react'; // Correct import for the Clock icon
+import { useContext, useEffect, useState } from "react";
+import { DataContext } from "../../contexts/DataContext";
+import { ProfileContext } from "../../contexts/ProfileContext";
+import { Clock } from "lucide-react"; // Correct import for the Clock icon
 
 const Homepage = () => {
   const {
@@ -15,16 +15,44 @@ const Homepage = () => {
   } = useContext(DataContext);
   // Access the profile data from ProfileContext
   const { profile } = useContext(ProfileContext);
+  const [name, setName] = useState("");
+  const token = localStorage.getItem("accessToken");
+  console.log(token);
+  const fetchUser = async (e) => {
+    try {
+      const response = await fetch("http://localhost:8799/api/auth/get-user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      setName(data.name);
+
+      if (!response.ok) {
+        throw new Error(data.error || "failed to fetch user");
+      }
+    } catch (err) {
+      console.error("Error while fetching user:", err);
+    }
+  };
 
   // Get the current date and time
   const currentTime = new Date();
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
     <>
       <div className={module.header}>
         <div className={module.welcomeContainer}>
           {/* Dynamically display the user's name from the profile */}
-          <div className={module.welcomeMessage}>Welcome back, {profile.userName}!</div>
+          <div className={module.welcomeMessage}>Welcome back, {name}!</div>
           <div className={module.pageDescription}>You are on the Home Page</div>
         </div>
 
@@ -32,10 +60,10 @@ const Homepage = () => {
           <div className={module.currentTimeText}>
             <p className={module.timeLabel}>Today's Date</p>
             <p className={module.timeValue}>
-              {currentTime.toLocaleDateString('en-US', {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric',
+              {currentTime.toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
               })}
             </p>
           </div>

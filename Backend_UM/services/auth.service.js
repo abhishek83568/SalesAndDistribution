@@ -14,25 +14,6 @@ const REFRESH_TOKEN_SECRET =
 // In-memory storage for refresh tokens (for demonstration only)
 let refreshTokens = [];
 
-// exports.register = async ({ name, email, password, phoneNumber }) => {
-//   // Check if the user already exists
-//   const existingUser = await prisma.user.findUnique({ where: { email } });
-//   if (existingUser) {
-//     throw new Error("User already exists");
-//   }
-//   // Hash the password
-//   const hashedPassword = await bcrypt.hash(password, 10);
-//   // Create and return the new user
-//   const user = await prisma.user.create({
-//     data: {
-//       name,
-//       email,
-//       password: hashedPassword,
-//       phoneNumber,
-//     },
-//   });
-//   return user;
-// };
 exports.register = async ({ name, email, password, phoneNumber }) => {
   // Validate password strength
   const passwordRegex =
@@ -94,7 +75,7 @@ exports.login = async ({ email, password }) => {
   );
   // Store the refresh token
   refreshTokens.push(refreshToken);
-  return { accessToken, refreshToken };
+  return { accessToken, refreshToken, user };
 };
 
 exports.refreshToken = async ({ token }) => {
@@ -151,36 +132,6 @@ exports.forgotPassword = async ({ email }) => {
   await sendPasswordResetEmail(email, resetLink, resetToken, hashedToken);
 };
 
-// exports.resetPassword = async ({ token, email, newPassword }) => {
-//   const user = await prisma.user.findUnique({ where: { email } });
-//   if (!user) {
-//     throw new Error("Invalid token or email");
-//   }
-
-//   // Hash the received token and compare with stored one
-//   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-
-//   if (
-//     hashedToken !== user.resetPasswordToken ||
-//     user.resetPasswordExpires < new Date()
-//   ) {
-//     throw new Error("Token expired or invalid");
-//   }
-
-//   // Hash the new password
-//   const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-//   // Update user password and clear reset token fields
-//   await prisma.user.update({
-//     where: { email },
-//     data: {
-//       password: hashedPassword,
-//       resetPasswordToken: null,
-//       resetPasswordExpires: null,
-//     },
-//   });
-// };
-
 exports.resetPassword = async ({ token, newPassword }) => {
   // Hash the received token (since it's stored hashed in the DB)
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
@@ -211,4 +162,18 @@ exports.resetPassword = async ({ token, newPassword }) => {
   });
 
   return { message: "Password reset successfully" };
+};
+
+exports.editProfile = async ({}) => {};
+
+exports.getUser = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: { userId: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return user;
 };

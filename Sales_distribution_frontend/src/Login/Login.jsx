@@ -31,8 +31,8 @@ const Login = () => {
           "content-type": "application/json",
         },
         body: JSON.stringify({
-          email: login.email, // ✅ FIXED: use `login.email`
-          password: login.password, // ✅ FIXED: use `login.password`
+          email: login.email,
+          password: login.password,
         }),
       });
 
@@ -42,6 +42,8 @@ const Login = () => {
         throw new Error(data.error || "Login failed");
       }
 
+      localStorage.setItem("accessToken", data.accessToken); // Store token
+      localStorage.setItem("refreshToken", data.refreshToken);
       toast.success("User logged in successfully!", { position: "top-center" });
 
       setLogin({
