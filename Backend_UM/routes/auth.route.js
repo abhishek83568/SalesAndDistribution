@@ -4,6 +4,7 @@ const authController = require("../controllers/auth.controller");
 const { forgotPasswordLimiter } = require("../middlewares/rateLimit");
 const { validateResetPassword } = require("../middlewares/validation");
 const authenticate = require("../middlewares/auth.middleware");
+const upload = require("../utils/multer");
 
 router.get("/get-user", authenticate, authController.getUser);
 
@@ -13,7 +14,12 @@ router.post("/register", authController.register);
 // Login endpoint
 router.post("/login", authController.login);
 
-router.patch("/edit-profile", authenticate, authController.editProfile);
+router.patch(
+  "/edit-profile",
+  authenticate,
+  upload.single("profilePic"),
+  authController.editProfile
+);
 
 // Refresh token endpoint
 router.post("/refresh-token", authController.refreshToken);

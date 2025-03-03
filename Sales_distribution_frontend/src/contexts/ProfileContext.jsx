@@ -5,9 +5,9 @@ export const ProfileContext = createContext();
 
 const ProfileProvider = ({ children }) => {
   const [profile, setProfile] = useState({
-    userName: "Abhishek Kumar Ray",
-    email: "abhishek.ray@galvinus.in",
-    number: "123-456-7890",
+    userName: "",
+    email: "",
+    phoneNumber: "",
     profilePicture: null,
   });
 

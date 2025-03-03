@@ -143,7 +143,27 @@ import SignUp from "./Login/SignUp";
 import ForgotPassword from "./Login/ForgotPassword";
 import ResetPassword from "./Login/ResetPassword";
 import PrivateRoute from "./Login/ProtectedRoute";
+import API from "./utils/app";
+import { useEffect } from "react";
 function App() {
+  // const checkToken = async () => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   if (!accessToken) {
+  //     console.log("No access token found, redirecting to login.");
+  //     window.location.href = "/login";
+  //     return;
+  //   }
+
+  //   try {
+  //     // Try fetching a protected resource
+  //     await API.get("/user/me"); // Example API call
+  //   } catch (error) {
+  //     console.error("Access token expired, handling refresh...");
+  //   }
+  // };
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
   return (
     <BrowserRouter>
       <Routes>
@@ -152,14 +172,21 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route
-          path="/"
+          path="/layout"
           element={
             <ProtectedRoute>
               <Layout />
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Layout />}>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/salesorder" element={<SalesOrderPage />} />
           <Route path="/lineitems" element={<LineItemsPage />} />
           <Route path="/customer" element={<CustomerPage />} />
@@ -471,7 +498,14 @@ function App() {
             element={<EditReturnOrderForm />}
           />
 
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/setting" element={<Settings />} />
           <Route path="/notification" element={<NotificationSettings />} />
           <Route

@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { sendPasswordResetEmail } = require("./emailService");
+const cloudinary = require("../utils/cloudinary");
 
 // Retrieve secrets from environment variables
 const ACCESS_TOKEN_SECRET =
@@ -66,7 +67,7 @@ exports.login = async ({ email, password }) => {
   const accessToken = jwt.sign(
     { userId: user.userId, email: user.email },
     ACCESS_TOKEN_SECRET,
-    { expiresIn: "15m" } // Short-lived access token
+    { expiresIn: "1m" }
   );
   const refreshToken = jwt.sign(
     { userId: user.userId, email: user.email },
@@ -164,7 +165,137 @@ exports.resetPassword = async ({ token, newPassword }) => {
   return { message: "Password reset successfully" };
 };
 
-exports.editProfile = async ({}) => {};
+// exports.editProfile = async (userId, body, file) => {
+//   try {
+//     const { name, phoneNumber, email } = body; // Extract name and phoneNumber
+
+//     // Fetch the existing user to keep required fields
+//     const existingUser = await prisma.user.findUnique({
+//       where: { userId },
+//       select: {
+//         email: true,
+//         password: true,
+//         profilePic: true,
+//         name: true,
+//         phoneNumber: true,
+//       },
+//     });
+
+//     if (!existingUser) {
+//       throw new Error("User not found");
+//     }
+
+//     // Prepare update data (only include fields that are provided)
+//     const updateData = {
+//       name: name || existingUser.name, // Keep old name if not provided
+//       phoneNumber: phoneNumber || existingUser.phoneNumber, // Keep old phoneNumber if not provided
+//       profilePic: file ? `/uploads/${file.filename}` : existingUser.profilePic, // Preserve existing profilePic if no new file
+//       email: email || existingUser.email, // Preserve email
+//       password: existingUser.password, // Preserve password
+//     };
+
+//     // Perform the update
+//     const updatedUser = await prisma.user.update({
+//       where: { userId },
+//       data: updateData,
+//     });
+
+//     return updatedUser;
+//   } catch (error) {
+//     throw new Error(error.message);
+//   }
+// };
+// exports.editProfile = async (userId, body, file) => {
+//   try {
+//     const { name, phoneNumber, email } = body;
+
+//     // Fetch existing user details
+//     const existingUser = await prisma.user.findUnique({
+//       where: { userId },
+//       select: {
+//         email: true,
+//         password: true,
+//         profilePic: true,
+//         name: true,
+//         phoneNumber: true,
+//       },
+//     });
+
+//     if (!existingUser) {
+//       throw new Error("User not found");
+//     }
+
+//     // Determine new profile picture URL
+//     let profilePicUrl = existingUser.profilePic;
+//     if (file) {
+//       profilePicUrl = `/uploads/${file.filename}`;
+//     }
+
+//     // Prepare update data (only include fields that are provided)
+//     const updateData = {
+//       name: name || existingUser.name,
+//       phoneNumber: phoneNumber || existingUser.phoneNumber,
+//       profilePic: profilePicUrl, // Save local path or cloud URL
+//       email: existingUser.email, // Preserve email
+//       password: existingUser.password, // Preserve password
+//     };
+
+//     // Perform update
+//     const updatedUser = await prisma.user.update({
+//       where: { userId },
+//       data: updateData,
+//     });
+
+//     return updatedUser;
+//   } catch (error) {
+//     throw new Error(error.message);
+//   }
+// };
+
+exports.editProfile = async (userId, body, file) => {
+  try {
+    const { name, phoneNumber, email } = body;
+
+    const existingUser = await prisma.user.findUnique({
+      where: { userId },
+      select: {
+        email: true,
+        password: true,
+        profilePic: true,
+        name: true,
+        phoneNumber: true,
+      },
+    });
+
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    // Use Cloudinary URL if a new file is uploaded
+    let profilePicUrl = existingUser.profilePic;
+    if (file) {
+      console.log("Uploaded file:", file); // Debugging Cloudinary response
+      profilePicUrl = file.path; // Cloudinary provides a public URL in 'path'
+    }
+
+    const updateData = {
+      name: name || existingUser.name,
+      phoneNumber: phoneNumber || existingUser.phoneNumber,
+      profilePic: profilePicUrl, // Store Cloudinary URL
+      email: existingUser.email,
+      password: existingUser.password,
+    };
+
+    const updatedUser = await prisma.user.update({
+      where: { userId },
+      data: updateData,
+    });
+
+    return updatedUser;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 exports.getUser = async (userId) => {
   const user = await prisma.user.findUnique({

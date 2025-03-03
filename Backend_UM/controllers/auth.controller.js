@@ -18,12 +18,52 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.editProfile = async (req, res) => {
-  try {
-  } catch (error) {}
-};
+// exports.editProfile = async (req, res) => {
+//   try {
+//     console.log("Received body:", req.body); // Debugging
+//     console.log("Received file:", req.file); // Debugging file upload
+//     console.log("User ID:", req.userId); // Debugging userId
+
+//     // Ensure req.body exists before calling the service
+//     if (!req.body) {
+//       return res.status(400).json({ error: "Request body is missing" });
+//     }
+
+//     // Pass the userId, req.body, and req.file to the service
+//     const user = await authService.editProfile(req.userId, req.body, req.file);
+
+//     res.status(200).json({ message: "User details edited successfully", user });
+//   } catch (error) {
+//     console.error("Edit Profile Error:", error);
+//     res
+//       .status(400)
+//       .json({ error: error.message || "An unknown error occurred" });
+//   }
+// };
 
 // authController.js
+exports.editProfile = async (req, res) => {
+  try {
+    console.log("Received body:", req.body); // Debugging
+    console.log("Received file:", req.file); // Debugging file upload
+    console.log("User ID:", req.userId); // Debugging userId
+
+    if (!req.body) {
+      return res.status(400).json({ error: "Request body is missing" });
+    }
+
+    // Call the service with the correct parameters
+    const user = await authService.editProfile(req.userId, req.body, req.file);
+
+    res.status(200).json({ message: "User details edited successfully", user });
+  } catch (error) {
+    console.error("Edit Profile Error:", error);
+    res
+      .status(400)
+      .json({ error: error.message || "An unknown error occurred" });
+  }
+};
+
 exports.getUser = async (req, res) => {
   try {
     // Pass the userId from the request (set by the auth middleware)

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import galvinusLogo from "../assets/galvinus_logo.jpeg";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -57,7 +58,7 @@ const ResetPassword = () => {
       setMessage("Password reset successful! Redirecting...");
       toast.success("Password reset successful!");
 
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/"), 2000);
     } catch (err) {
       console.error("Error resetting password:", err);
       setError("Failed to reset password. Please try again.");

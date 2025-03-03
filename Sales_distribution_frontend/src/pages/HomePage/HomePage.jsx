@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../../contexts/DataContext";
 import { ProfileContext } from "../../contexts/ProfileContext";
 import { Clock } from "lucide-react"; // Correct import for the Clock icon
+import { useNavigate } from "react-router-dom";
+import fetchWithAuth from "../../utils/app";
 
 const Homepage = () => {
   const {
@@ -13,14 +15,15 @@ const Homepage = () => {
     pendingInvoices,
     exchangeRates,
   } = useContext(DataContext);
+  const navigate = useNavigate();
   // Access the profile data from ProfileContext
   const { profile } = useContext(ProfileContext);
   const [name, setName] = useState("");
   const token = localStorage.getItem("accessToken");
-  console.log(token);
+
   const fetchUser = async (e) => {
     try {
-      const response = await fetch("http://localhost:8799/api/auth/get-user", {
+      const response = await fetchWithAuth("/api/auth/get-user", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -29,10 +32,9 @@ const Homepage = () => {
       });
 
       const data = await response.json();
-
       setName(data.name);
-
       if (!response.ok) {
+        navigate("/signup");
         throw new Error(data.error || "failed to fetch user");
       }
     } catch (err) {
@@ -45,7 +47,7 @@ const Homepage = () => {
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [token]);
 
   return (
     <>
