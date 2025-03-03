@@ -6,14 +6,14 @@
   background-color: #fff;
   position: absolute;
   right: 0px;
-  top: 70px;
+  top: 0px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
 }
 
-.nameheading{
+.nameheading {
   padding-top: 10px;
   padding-bottom: 5px;
   font-size: 30px;
@@ -89,7 +89,7 @@ button {
   transition: background-color 0.3s ease;
 }
 .profile button:hover {
-  background-color: #7671cc ;
+  background-color: #7671cc;
 }
 
 input[type="file"] {

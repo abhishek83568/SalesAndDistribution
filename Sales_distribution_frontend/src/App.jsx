@@ -146,24 +146,6 @@ import PrivateRoute from "./Login/ProtectedRoute";
 import API from "./utils/app";
 import { useEffect } from "react";
 function App() {
-  // const checkToken = async () => {
-  //   const accessToken = localStorage.getItem("accessToken");
-  //   if (!accessToken) {
-  //     console.log("No access token found, redirecting to login.");
-  //     window.location.href = "/login";
-  //     return;
-  //   }
-
-  //   try {
-  //     // Try fetching a protected resource
-  //     await API.get("/user/me"); // Example API call
-  //   } catch (error) {
-  //     console.error("Access token expired, handling refresh...");
-  //   }
-  // };
-  // useEffect(() => {
-  //   checkToken();
-  // }, []);
   return (
     <BrowserRouter>
       <Routes>

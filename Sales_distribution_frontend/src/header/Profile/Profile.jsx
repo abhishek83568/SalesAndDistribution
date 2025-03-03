@@ -316,6 +316,29 @@ const Profile = () => {
     }
   };
 
+  const logoutUser = async () => {
+    try {
+      const refreshToken = localStorage.getItem("refreshToken");
+
+      await fetch("http://localhost:8799/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: refreshToken }),
+      });
+
+      // Clear all auth tokens from localStorage
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+
+      // Redirect to login page
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   if (!profile) {
     return <div>Loading...</div>;
   }
@@ -401,6 +424,7 @@ const Profile = () => {
             >
               Edit Profile
             </button>
+            <button onClick={logoutUser}>Logout</button>
           </>
         )}
       </div>
