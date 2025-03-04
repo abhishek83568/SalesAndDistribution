@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-exports.createOrUpdateInventory = async ({
+exports.createInventory = async ({
   productId,
   location,
   stockLevel,
@@ -10,44 +10,22 @@ exports.createOrUpdateInventory = async ({
   lotNumber,
 }) => {
   try {
-    // Check if inventory already exists for the given productId
-    const existingInventory = await prisma.inventory.findUnique({
-      where: { productId },
+    const newInventory = await prisma.inventory.create({
+      data: {
+        productId,
+        location,
+        stockLevel,
+        reorderLevel,
+        safetyStock,
+        lotNumber,
+      },
     });
 
-    if (existingInventory) {
-      // Update existing inventory
-      const updatedInventory = await prisma.inventory.update({
-        where: { productId },
-        data: {
-          stockLevel,
-          reorderLevel,
-          safetyStock,
-          lotNumber,
-          location,
-        },
-      });
-
-      console.log("Inventory updated successfully:", updatedInventory);
-      return updatedInventory;
-    } else {
-      // Create new inventory entry
-      const newInventory = await prisma.inventory.create({
-        data: {
-          productId,
-          location,
-          stockLevel,
-          reorderLevel,
-          safetyStock,
-          lotNumber,
-        },
-      });
-
-      console.log("Inventory created successfully:", newInventory);
-      return newInventory;
-    }
+    console.log("Inventory created successfully:", newInventory);
+    return newInventory;
   } catch (error) {
     console.error("Error in inventory operation:", error);
-    throw new Error("Failed to create or update inventory");
+    // Optionally, throw a more detailed error for debugging:
+    throw new Error("Failed to create inventory: " + error.message);
   }
 };

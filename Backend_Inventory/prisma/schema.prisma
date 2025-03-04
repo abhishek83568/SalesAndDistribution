@@ -21,7 +21,7 @@ model Inventory {
   stockLevel   Int
   reorderLevel Int
   safetyStock  Int
-  lotNumber    Int @unique
+  lotNumber    String @unique
 
   warehouses   Warehouse[] // One inventory can have multiple warehouses
   movements    ProductMovement[] // One inventory can have multiple product movements

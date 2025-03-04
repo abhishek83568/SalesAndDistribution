@@ -177,7 +177,14 @@ function App() {
           <Route path="/discountrules" element={<DiscountRulesPage />} />
           <Route path="/product" element={<ProductPage />} />
           <Route path="/discount" element={<DiscountPage />} />
-          <Route path="/inventory" element={<InventoryPage />} />
+          <Route
+            path="/inventory"
+            element={
+              <ProtectedRoute>
+                <InventoryPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/productmovement" element={<ProductMovementPage />} />
 
           <Route path="/warehouse" element={<WarehousePage />} />
@@ -252,7 +259,14 @@ function App() {
           <Route path="/creatediscount" element={<CreateDiscountPage />} />
           <Route path="/editdiscount" element={<EditDiscountPage />} />
           <Route path="/displaydiscount" element={<DisplayDiscountPage />} />
-          <Route path="/createinventory" element={<CreateInventoryPage />} />
+          <Route
+            path="/createinventory"
+            element={
+              <PrivateRoute>
+                <CreateInventoryPage />
+              </PrivateRoute>
+            }
+          />
           <Route path="/editinventory" element={<EditInventoryPage />} />
           <Route path="/displayinventory" element={<DisplayInventoryPage />} />
           <Route path="/createwarehouse" element={<CreateWarehousePage />} />
