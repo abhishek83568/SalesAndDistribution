@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function CreateInventoryForm() {
   const token = localStorage.getItem("accessToken");
   const [formData, setFormData] = useState({
+    inventoryId: "",
     productId: "",
     location: "",
     stockLevel: "", // numeric values as strings
@@ -65,6 +66,7 @@ export default function CreateInventoryForm() {
   // Check if the form is valid (no errors and all required fields provided)
   const isFormValid = () => {
     const requiredFields = [
+      "inventoryId",
       "productId",
       "location",
       "stockLevel",
@@ -112,6 +114,7 @@ export default function CreateInventoryForm() {
       if (response.ok) {
         console.log(data);
         setFormData({
+          inventoryId: "",
           productId: "",
           location: "",
           stockLevel: "", // numeric values as strings
@@ -135,6 +138,21 @@ export default function CreateInventoryForm() {
           <div className="header-box">
             <h2>Header</h2>
             <div className="data-container">
+              <div className="data">
+                <label htmlFor="inventoryId">Inventory ID</label>
+                <input
+                  type="text"
+                  id="inventoryId"
+                  name="inventoryId"
+                  placeholder="Primary Key"
+                  value={formData.inventoryId}
+                  onChange={handleChange}
+                  required
+                />
+                {errors.inventoryId && (
+                  <p className="error">{errors.inventoryId}</p>
+                )}
+              </div>
               <div className="data">
                 <label htmlFor="productId">Product ID</label>
                 <input

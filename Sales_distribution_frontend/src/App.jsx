@@ -419,7 +419,10 @@ function App() {
             path="/displayinventorypage"
             element={<DisplayInventoryForm />}
           />
-          <Route path="/editinventorypage" element={<EditInventoryForm />} />
+          <Route
+            path="/editinventorypage/:inventoryId"
+            element={<EditInventoryForm />}
+          />
           <Route
             path="/displayproductmovementpage"
             element={<DisplayProductMovementForm />}

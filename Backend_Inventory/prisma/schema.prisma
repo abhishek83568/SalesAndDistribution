@@ -14,24 +14,24 @@ datasource db {
 }
 
 model Inventory {
-  inventoryId  String   @id @default(uuid())
+  inventoryId  String   @id @unique
   productId    String   // Foreign key to Product (if exists)
 
   location     String
   stockLevel   Int
   reorderLevel Int
   safetyStock  Int
-  lotNumber    String @unique
+  lotNumber    String 
 
   warehouses   Warehouse[] // One inventory can have multiple warehouses
   movements    ProductMovement[] // One inventory can have multiple product movements
 }
 
 model Warehouse {
-  warehouseId      String   @id @default(uuid())  
-  inventoryId      String   // Foreign key from Inventory
-  inventory        Inventory @relation(fields: [inventoryId], references: [inventoryId])
-
+  warehouseId      String   @id @unique  // Manually provided ID
+  inventoryId      String  
+  inventory        Inventory @relation(fields: [inventoryId], references: [inventoryId], onDelete: Cascade)
+  productId        String //fetched from the inventory
   warehouseName    String
   warehouseAddress String
   warehouseCapacity Int
@@ -46,13 +46,13 @@ enum WarehouseType {
 }
 
 model ProductMovement {
-  movementId         String   @id @default(uuid())
-  
+  movementId         String   @id @unique // Manually provided ID
+
   inventoryId        String  
-  inventory          Inventory @relation(fields: [inventoryId], references: [inventoryId])
+  inventory          Inventory @relation(fields: [inventoryId], references: [inventoryId], onDelete: Cascade)
 
   warehouseId        String  
-  warehouse          Warehouse @relation(fields: [warehouseId], references: [warehouseId])
+  warehouse          Warehouse @relation(fields: [warehouseId], references: [warehouseId], onDelete: Cascade)
 
   sourceLocation     String
   destinationLocation String

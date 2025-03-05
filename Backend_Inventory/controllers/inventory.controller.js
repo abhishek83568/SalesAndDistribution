@@ -1,45 +1,8 @@
-// exports.createInventory = async (req, res) => {
-//   try {
-//     const {
-//       productId,
-//       location,
-//       stockLevel,
-//       reorderLevel,
-//       safetyStock,
-//       lotNumber,
-//     } = req.body;
-
-//     // Validate required fields
-//     if (
-//       !productId ||
-//       !location ||
-//       !stockLevel ||
-//       !reorderLevel ||
-//       !safetyStock ||
-//       !lotNumber
-//     ) {
-//       return res.status(400).json({ error });
-//     }
-
-//     // Call service function
-//     const inventory = await inventoryService.createOrUpdateInventory(req.body);
-
-//     // Response based on whether it's a new record or an update
-//     const statusCode = inventory.isNew ? 201 : 200;
-//     const message = inventory.isNew
-//       ? "Inventory Created Successfully"
-//       : "Inventory Updated Successfully";
-
-//     return res.status(statusCode).json({ message, inventory });
-//   } catch (error) {
-//     console.error("Error in inventory controller:", error);
-//     return res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
 const inventoryService = require("../services/inventory.services");
 exports.createInventory = async (req, res) => {
   try {
     const {
+      inventoryId,
       productId,
       location,
       stockLevel,
@@ -50,6 +13,7 @@ exports.createInventory = async (req, res) => {
 
     // Validate required fields
     if (
+      !inventoryId ||
       !productId ||
       !location ||
       !stockLevel ||
@@ -71,5 +35,57 @@ exports.createInventory = async (req, res) => {
   } catch (error) {
     console.error("Error in inventory controller:", error);
     return res.status(500).json({ error: error });
+  }
+};
+
+exports.getInventory = async (req, res) => {
+  try {
+    const { inventoryId } = req.query; // ✅ Use query parameters
+
+    if (!inventoryId) {
+      return res.status(400).json({ error: "inventoryId is required" });
+    }
+
+    const inventory = await inventoryService.getInventoryById(inventoryId);
+
+    if (!inventory) {
+      return res.status(404).json({ error: "Inventory not found" });
+    }
+
+    res.json(inventory);
+  } catch (error) {
+    console.error("Error fetching inventory:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.editInventory = async (req, res) => {
+  try {
+    const { inventoryId } = req.params; // ✅ Extract inventoryId from URL params
+    const updateData = req.body;
+
+    // Check if inventory exists
+    const existingInventory = await prisma.inventory.findUnique({
+      where: { inventoryId },
+    });
+
+    if (!existingInventory) {
+      return res.status(404).json({ error: "Inventory not found." });
+    }
+
+    // Update inventory details
+    const updatedInventory = await prisma.inventory.update({
+      where: { inventoryId },
+      data: {
+        ...updateData, // ✅ Update only provided fields
+      },
+    });
+
+    res.json(updatedInventory);
+  } catch (error) {
+    console.error("Error updating inventory:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to update inventory: " + error.message });
   }
 };

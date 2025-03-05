@@ -15,12 +15,12 @@ const FormPageHeader = () => {
 				</Link>
 			)} */}
 
-      {btn.includes("Edit") && (
+      {/* {btn.includes("Edit") && (
         <Link to={url} className="icon-button">
           <i className="fas fa-edit" />
           {btn}
         </Link>
-      )}
+      )} */}
 
       {btn.includes("Display") && (
         <Link to={url} className="icon-button">
@@ -29,12 +29,12 @@ const FormPageHeader = () => {
         </Link>
       )}
 
-      {btn.includes("Save") && (
+      {/* {btn.includes("Save") && (
         <Link to={url} className="icon-button">
           <i class="fa-solid fa-floppy-disk"></i>
           {btn}
         </Link>
-      )}
+      )} */}
 
       {(!btn.includes("Display") || btn.includes("NoBtn")) && (
         <Link to={goBackUrl} className="icon-button">
