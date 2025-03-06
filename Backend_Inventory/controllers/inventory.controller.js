@@ -61,27 +61,21 @@ exports.getInventory = async (req, res) => {
 
 exports.editInventory = async (req, res) => {
   try {
-    const { inventoryId } = req.params; // ✅ Extract inventoryId from URL params
+    const { inventoryId } = req.params; // Extract inventoryId from URL params
     const updateData = req.body;
 
-    // Check if inventory exists
-    const existingInventory = await prisma.inventory.findUnique({
-      where: { inventoryId },
+    console.log("Updating Inventory ID:", inventoryId);
+    console.log("Update Data:", updateData);
+
+    const updatedInventory = await inventoryService.editInventory(
+      inventoryId,
+      updateData
+    );
+
+    res.json({
+      message: "Inventory updated successfully",
+      inventory: updatedInventory,
     });
-
-    if (!existingInventory) {
-      return res.status(404).json({ error: "Inventory not found." });
-    }
-
-    // Update inventory details
-    const updatedInventory = await prisma.inventory.update({
-      where: { inventoryId },
-      data: {
-        ...updateData, // ✅ Update only provided fields
-      },
-    });
-
-    res.json(updatedInventory);
   } catch (error) {
     console.error("Error updating inventory:", error);
     res

@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = new PrismaClient(); // ✅ Ensure Prisma Client is instantiated
 
 exports.createInventory = async ({
   inventoryId,
@@ -34,7 +34,7 @@ exports.createInventory = async ({
 
 exports.editInventory = async (inventoryId, updateData) => {
   try {
-    // Fetch the existing inventory item
+    // Find existing inventory
     const existingInventory = await prisma.inventory.findUnique({
       where: { inventoryId },
     });
@@ -43,7 +43,7 @@ exports.editInventory = async (inventoryId, updateData) => {
       throw new Error("Inventory not found.");
     }
 
-    // Update inventory details with provided data or fallback to existing values
+    // Update inventory only with provided fields (keeps existing values)
     const updatedInventory = await prisma.inventory.update({
       where: { inventoryId },
       data: {

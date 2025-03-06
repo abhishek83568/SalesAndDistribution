@@ -28,32 +28,6 @@ const EditInventoryPage = () => {
     }));
   };
 
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:7857/api/inventory/get-inventory?inventoryId=${formData.inventoryId}`,
-  //         {
-  //           method: "GET", // ✅ Corrected method
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-
-  //       const data = await response.json();
-  //       if (response.ok) {
-  //         console.log(data);
-  //         setFormData(data); // ✅ Prefill the form with fetched data
-  //         navigate(`/editinventorypage`); // ✅ Navigate with inventoryId
-  //       } else {
-  //         console.log("Error fetching inventory:", data.error);
-  //       }
-  //     } catch (error) {
-  //       console.log("Error:", error);
-  //     }
-  //   };
   const handleSubmit = async (e) => {
     e.preventDefault();
 

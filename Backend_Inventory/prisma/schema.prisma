@@ -54,6 +54,7 @@ model ProductMovement {
   warehouseId        String  
   warehouse          Warehouse @relation(fields: [warehouseId], references: [warehouseId], onDelete: Cascade)
 
+  productId          String
   sourceLocation     String
   destinationLocation String
   quantity           Int

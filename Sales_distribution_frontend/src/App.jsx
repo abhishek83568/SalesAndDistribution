@@ -416,7 +416,7 @@ function App() {
           <Route path="/displayproductpage" element={<DisplayProductForm />} />
           <Route path="/editproductpage" element={<EditProductForm />} />
           <Route
-            path="/displayinventorypage"
+            path="/displayinventorypage/:inventoryId"
             element={<DisplayInventoryForm />}
           />
           <Route
@@ -433,10 +433,13 @@ function App() {
           />
 
           <Route
-            path="/displaywarehousepage"
+            path="/displaywarehousepage/:warehouseId"
             element={<DisplayWarehouseForm />}
           />
-          <Route path="/editwarehousepage" element={<EditWarehouseForm />} />
+          <Route
+            path="/editwarehousepage/:warehouseId"
+            element={<EditWarehouseForm />}
+          />
           <Route path="/displaycarrierpage" element={<DisplayCarrierForm />} />
           <Route path="/editcarrierpage" element={<EditCarrierForm />} />
           <Route
