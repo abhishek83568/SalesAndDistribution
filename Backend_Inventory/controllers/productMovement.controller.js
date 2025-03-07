@@ -24,12 +24,10 @@ exports.createProductMovement = async (req, res) => {
       !quantity ||
       !movementDate
     ) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "All fields (movementId, warehouseId, inventoryId, productId, sourceLocation, destinationLocation, quantity, movementDate) are required",
-        });
+      return res.status(400).json({
+        error:
+          "All fields (movementId, warehouseId, inventoryId, productId, sourceLocation, destinationLocation, quantity, movementDate) are required",
+      });
     }
 
     // ✅ Ensure quantity is a positive number
@@ -59,6 +57,98 @@ exports.createProductMovement = async (req, res) => {
     res.status(result.status).json(result.data);
   } catch (error) {
     console.error("Error creating product movement:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// exports.getProductMovement=async(req,res)=>{
+//   try {
+//       const { movementId } = req.query; // ✅ Use query parameters
+
+//       if (!movementId) {
+//         return res.status(400).json({ error: "movementId is required" });
+//       }
+
+//       const productMovement = await productMovementService.getProductMovementById(movementId);
+
+//       if (!productMovement) {
+//         return res.status(404).json({ error: "ProductMovement not found" });
+//       }
+
+//       res.json(productMovement);
+//     } catch (error) {
+//       console.error("Error fetching productMovement:", error);
+//       res.status(500).json({ error: "Internal Server Error" });
+//     }
+// }
+
+exports.getProductMovement = async (req, res) => {
+  try {
+    const { movementId } = req.query; // Extract movementId from query parameters
+
+    if (!movementId) {
+      return res.status(400).json({ error: "movementId is required" });
+    }
+
+    const productMovement = await productMovementService.getProductMovementById(
+      movementId
+    );
+
+    if (!productMovement) {
+      return res.status(404).json({ error: "ProductMovement not found" });
+    }
+
+    res.json(productMovement);
+  } catch (error) {
+    console.error("Error fetching productMovement:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getProductMovementWithProduct = async (req, res) => {
+  try {
+    const { movementId, productId } = req.query; // Extract movementId from query parameters
+
+    if (!movementId || !productId) {
+      return res
+        .status(400)
+        .json({ error: "movementId or productId is required" });
+    }
+
+    const productMovement =
+      await productMovementService.getProductMovementWithProduct(
+        movementId,
+        productId
+      );
+
+    if (!productMovement) {
+      return res.status(404).json({ error: "ProductMovement not found" });
+    }
+
+    res.json(productMovement);
+  } catch (error) {
+    console.error("Error fetching productMovement:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.editProductMovement = async (req, res) => {
+  try {
+    const { movementId } = req.params;
+    const updateData = req.body;
+
+    if (!movementId) {
+      return res.status(400).json({ error: "movementId is required" });
+    }
+
+    const result = await productMovementService.editProductMovement(
+      movementId,
+      updateData
+    );
+
+    return res.status(result.status).json(result.data);
+  } catch (error) {
+    console.error("Error editing productMovement:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

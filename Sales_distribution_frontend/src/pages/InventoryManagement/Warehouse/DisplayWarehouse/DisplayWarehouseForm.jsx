@@ -8,13 +8,6 @@ export default function DisplayWarehouseForm() {
   const { setUrl, setGoBackUrl } = useContext(FormPageHeaderContext);
   const location = useLocation();
   const warehouseData = location.state?.warehouseData;
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
 
   const [formData, setFormData] = useState({
     warehouseId: warehouseData?.warehouseId || "",
