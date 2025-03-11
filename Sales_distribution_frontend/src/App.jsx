@@ -462,7 +462,10 @@ function App() {
             path="/displayshipmentpage"
             element={<DisplayShipmentForm />}
           />
-          <Route path="/editshipmentpage" element={<EditShipmentForm />} />
+          <Route
+            path="/editshipmentpage/:shipmentId"
+            element={<EditShipmentForm />}
+          />
           <Route
             path="/displaycurrencyexchangeratepage"
             element={<DisplayCurrencyExchangeRateForm />}
