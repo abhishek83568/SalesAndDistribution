@@ -4,6 +4,7 @@ const dotenv = require("dotenv").config();
 const cors = require("cors");
 const shipmentRouter = require("./routes/shipment.route");
 const carrierRouter = require("./routes/carrier.route");
+const vehicleRouter = require("./routes/vehicle.route");
 
 app.use(express.json());
 app.use(
@@ -15,6 +16,7 @@ app.use(
 
 app.use("/api/shipment", shipmentRouter);
 app.use("/api/carrier", carrierRouter);
+app.use("/api/vehicle", vehicleRouter);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);

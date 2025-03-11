@@ -391,7 +391,10 @@ function App() {
           />
           <Route path="/editcustomerpage" element={<EditCustomerForm />} />
           <Route path="/displaycarrierpage" element={<DisplayCarrierForm />} />
-          <Route path="/editcarrierpage" element={<EditCarrierForm />} />
+          <Route
+            path="/editcarrierpage/:carrierId"
+            element={<EditCarrierForm />}
+          />
           <Route
             path="/displaydiscountpage"
             element={<DisplayDiscountForm />}
@@ -451,11 +454,11 @@ function App() {
             element={<EditDeliveryRouteForm />}
           />
           <Route
-            path="/displaydeliveryvehiclepage"
+            path="/displaydeliveryvehiclepage/:vehicleId"
             element={<DisplayDeliveryVehicleForm />}
           />
           <Route
-            path="/editdeliveryvehiclepage"
+            path="/editdeliveryvehiclepage/:vehicleId"
             element={<EditDeliveryVehicleForm />}
           />
           <Route

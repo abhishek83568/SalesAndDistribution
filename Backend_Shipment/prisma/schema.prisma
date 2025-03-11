@@ -78,7 +78,7 @@ model DeliveryVehicle {
   vehicleId       String @id @unique
   orderId         String
   vehicleType     String
-  vehicleCapacity String
+  vehicleCapacity Int
   assignedDriver  String
 
   shipment   Shipment @relation(fields: [shipmentId], references: [shipmentId]) // Foreign key to Shipment

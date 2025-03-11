@@ -30,3 +30,25 @@ exports.createCarrier = async (carrierData) => {
     },
   });
 };
+
+// Update carrier details while keeping previous values if not provided
+exports.updateCarrier = async (carrierId, updatedData) => {
+  return await prisma.carrier.update({
+    where: { carrierId },
+    data: updatedData,
+  });
+};
+
+exports.getCarrierByOrder = async (carrierId, orderId) => {
+  return await prisma.carrier.findFirst({
+    where: {
+      carrierId: carrierId,
+      orderId: orderId,
+    },
+    include: {
+      shipment: true, // Include related shipment (if needed)
+      deliveryRoutes: true, // Include related delivery routes (if needed)
+      deliveryVehicles: true, // Include related delivery vehicles (if needed)
+    },
+  });
+};
