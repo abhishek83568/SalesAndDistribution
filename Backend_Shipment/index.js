@@ -5,6 +5,7 @@ const cors = require("cors");
 const shipmentRouter = require("./routes/shipment.route");
 const carrierRouter = require("./routes/carrier.route");
 const vehicleRouter = require("./routes/vehicle.route");
+const vehicleRouteRouter = require("./routes/vehicleRoute.route");
 
 app.use(express.json());
 app.use(
@@ -17,6 +18,7 @@ app.use(
 app.use("/api/shipment", shipmentRouter);
 app.use("/api/carrier", carrierRouter);
 app.use("/api/vehicle", vehicleRouter);
+app.use("/api/vehicleRoute", vehicleRouteRouter);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);

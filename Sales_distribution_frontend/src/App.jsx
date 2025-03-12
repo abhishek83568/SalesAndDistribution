@@ -446,11 +446,11 @@ function App() {
           <Route path="/displaycarrierpage" element={<DisplayCarrierForm />} />
           <Route path="/editcarrierpage" element={<EditCarrierForm />} />
           <Route
-            path="/displaydeliveryroutepage"
+            path="/displaydeliveryroutepage/:routeId"
             element={<DisplayDeliveryRouteForm />}
           />
           <Route
-            path="/editdeliveryroutepage"
+            path="/editdeliveryroutepage/:routeId"
             element={<EditDeliveryRouteForm />}
           />
           <Route
