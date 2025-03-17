@@ -477,16 +477,28 @@ function App() {
             path="/editcurrencyexchangeratepage"
             element={<EditCurrencyExchangeRateForm />}
           />
-          <Route path="/displayinvoicepage" element={<DisplayInvoiceForm />} />
-          <Route path="/editinvoicepage" element={<EditInvoiceForm />} />
-          <Route path="/displaypaymentpage" element={<DisplayPaymentForm />} />
-          <Route path="/editpaymentpage" element={<EditPaymentForm />} />
           <Route
-            path="/displaytaxconfigurationpage"
+            path="/displayinvoicepage/:invoiceId"
+            element={<DisplayInvoiceForm />}
+          />
+          <Route
+            path="/editinvoicepage/:invoiceId"
+            element={<EditInvoiceForm />}
+          />
+          <Route
+            path="/displaypaymentpage/:paymentId"
+            element={<DisplayPaymentForm />}
+          />
+          <Route
+            path="/editpaymentpage/:paymentId"
+            element={<EditPaymentForm />}
+          />
+          <Route
+            path="/displaytaxconfigurationpage/:taxId"
             element={<DisplayTaxConfigurationForm />}
           />
           <Route
-            path="/edittaxconfigurationpage"
+            path="/edittaxconfigurationpage/:taxId"
             element={<EditTaxConfigurationForm />}
           />
           <Route
