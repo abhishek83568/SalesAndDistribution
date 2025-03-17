@@ -470,11 +470,11 @@ function App() {
             element={<EditShipmentForm />}
           />
           <Route
-            path="/displaycurrencyexchangeratepage"
+            path="/displaycurrencyexchangeratepage/:invoiceId"
             element={<DisplayCurrencyExchangeRateForm />}
           />
           <Route
-            path="/editcurrencyexchangeratepage"
+            path="/editcurrencyexchangeratepage/:invoiceId"
             element={<EditCurrencyExchangeRateForm />}
           />
           <Route

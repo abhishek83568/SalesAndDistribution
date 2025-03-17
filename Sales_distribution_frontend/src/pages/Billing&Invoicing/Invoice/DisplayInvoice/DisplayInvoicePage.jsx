@@ -109,7 +109,7 @@ export default function DisplayInvoicePage() {
                   type="text"
                   id="orderId"
                   name="orderId"
-                  value={formData.invoiceId}
+                  value={formData.orderId}
                   onChange={handleChange}
                   required
                 />

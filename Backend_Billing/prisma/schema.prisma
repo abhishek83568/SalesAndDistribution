@@ -76,12 +76,12 @@ enum TaxType {
 
 model CurrencyExchangeRate {
   id            String   @id @default(uuid())
-  exchangeId    String   @unique
   invoiceId     String
   orderId       String
   customerId    String
   currencyCode  String
   effectiveDate DateTime
+  exchangeRate  Float
 
   // Relation to Invoice
   invoice Invoice @relation(fields: [invoiceId], references: [invoiceId], onDelete: Cascade)

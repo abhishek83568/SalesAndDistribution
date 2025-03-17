@@ -88,3 +88,23 @@ exports.updateInvoice = async (invoiceId, updateData) => {
     throw error;
   }
 };
+
+exports.getInvoiceByOrder = async (orderId, invoiceId) => {
+  try {
+    console.log("✅ Querying DB for:", { invoiceId, orderId });
+
+    const invoiceData = await prisma.invoice.findFirst({
+      where: {
+        orderId,
+        invoiceId,
+      },
+    });
+
+    console.log("✅ Fetched Data from DB:", invoiceData);
+
+    return invoiceData;
+  } catch (error) {
+    console.error("❌ Error fetching invoiceData:", error);
+    throw error;
+  }
+};
