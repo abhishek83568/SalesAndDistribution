@@ -32,3 +32,59 @@ exports.createInvoice = async (invoiceData) => {
     throw new Error(`Failed to create invoice: ${error.message}`);
   }
 };
+
+exports.getInvoiceById = async (invoiceId) => {
+  try {
+    const invoice = await prisma.invoice.findUnique({
+      where: { invoiceId },
+    });
+    return invoice;
+  } catch (error) {
+    console.error("Error fetching invoice:", error);
+    throw error;
+  }
+};
+
+exports.updateInvoice = async (invoiceId, updateData) => {
+  try {
+    if (!invoiceId) {
+      throw new Error("Invoice ID is required");
+    }
+
+    // Find the invoice first
+    const existingInvoice = await prisma.invoice.findUnique({
+      where: { invoiceId },
+    });
+
+    if (!existingInvoice) {
+      return null; // Invoice not found
+    }
+
+    // Validate updateData fields before updating (optional but recommended)
+    const validFields = [
+      "orderId",
+      "customerId",
+      "totalAmount",
+      "invoiceDate",
+      "totalTax",
+      "paymentStatus",
+    ];
+    const filteredUpdateData = Object.keys(updateData)
+      .filter((key) => validFields.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = updateData[key];
+        return obj;
+      }, {});
+
+    // Update the invoice
+    const updatedInvoice = await prisma.invoice.update({
+      where: { invoiceId },
+      data: filteredUpdateData,
+    });
+
+    return updatedInvoice;
+  } catch (error) {
+    console.error("Error in updateInvoice service:", error);
+    throw error;
+  }
+};

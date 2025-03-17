@@ -4,6 +4,7 @@ const dotenv = require("dotenv").config();
 const cors = require("cors");
 const invoiceRouter = require("./routes/invoice.routes");
 const paymentRouter = require("./routes/payment.routes");
+const taxRouter = require("./routes/tax.routes");
 
 app.use(express.json());
 app.use(
@@ -15,6 +16,7 @@ app.use(
 
 app.use("/api/invoice", invoiceRouter);
 app.use("/api/payment", paymentRouter);
+app.use("/api/tax", taxRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

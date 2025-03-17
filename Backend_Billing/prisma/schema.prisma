@@ -55,17 +55,23 @@ enum PaymentMode {
 }
 
 model Tax {
-  id            String @id @default(uuid())
-  taxId         String @unique
+  id            String  @id @default(uuid())
+  taxId         String  @unique
   invoiceId     String
   orderId       String
   customerId    String
   region        String
-  taxType       String
+  taxType       TaxType
   taxPercentage Float
 
   // Relation to Invoice
   invoice Invoice @relation(fields: [invoiceId], references: [invoiceId], onDelete: Cascade)
+}
+
+enum TaxType {
+  CGST
+  SGST
+  IGST
 }
 
 model CurrencyExchangeRate {

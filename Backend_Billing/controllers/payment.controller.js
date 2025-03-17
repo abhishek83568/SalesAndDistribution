@@ -59,5 +59,76 @@ exports.createPayment = async (req, res) => {
   }
 };
 
-exports.editPayment = () => {};
-exports.getPayment = () => {};
+exports.editPayment = async (req, res) => {
+  try {
+    const { paymentId } = req.params;
+    const updatedData = req.body;
+
+    console.log("Editing Payment ID:", paymentId);
+    console.log("Updated Data:", updatedData);
+
+    const updatedPayment = await paymentService.editPayment(
+      paymentId,
+      updatedData
+    );
+
+    res.status(200).json({
+      message: "Payment updated successfully",
+      payment: updatedPayment,
+    });
+  } catch (error) {
+    console.error("Error updating payment:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to update payment: " + error.message });
+  }
+};
+
+exports.getPayment = async (req, res) => {
+  try {
+    const { paymentId } = req.query;
+
+    // Check if paymentId is provided
+    if (!paymentId) {
+      return res.status(400).json({ message: "paymentId is required" });
+    }
+
+    const paymentData = await paymentService.getPaymentById(paymentId);
+
+    if (!paymentData) {
+      return res.status(404).json({ message: "Payment record not found" });
+    }
+
+    res.status(200).json(paymentData);
+  } catch (error) {
+    console.error("Error fetching Payment data:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.getPaymentByInvoice = async (req, res) => {
+  try {
+    const { paymentId, invoiceId } = req.query;
+
+    // Check if taxId is provided
+    if (!paymentId || !invoiceId) {
+      return res
+        .status(400)
+        .json({ message: "paymentId  or InvoiceID is required" });
+    }
+
+    const paymentData = await paymentService.getPaymentByInvoice(
+      paymentId,
+      invoiceId
+    );
+
+    if (!paymentData) {
+      return res.status(404).json({ message: "Payment record not found" });
+    }
+
+    res.status(200).json(paymentData);
+  } catch (error) {
+    console.error("Error fetching Payment data:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
