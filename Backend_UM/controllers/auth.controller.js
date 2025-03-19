@@ -1,11 +1,37 @@
 const authService = require("../services/auth.service");
 
-exports.register = async (req, res) => {
+exports.sendEmailOtp = async (req, res) => {
   try {
-    const user = await authService.register(req.body);
-    res.status(201).json({ message: "User registered successfully", user });
+    const { email } = req.body;
+    const response = await authService.sendEmailOtp(email);
+    res.status(200).json(response);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.verifyEmailOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const response = await authService.verifyEmailOtp(email, otp);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.registerUser = async (req, res) => {
+  try {
+    const { name, email, password, phoneNumber } = req.body;
+    const user = await authService.registerUser({
+      name,
+      email,
+      password,
+      phoneNumber,
+    });
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -18,30 +44,6 @@ exports.login = async (req, res) => {
   }
 };
 
-// exports.editProfile = async (req, res) => {
-//   try {
-//     console.log("Received body:", req.body); // Debugging
-//     console.log("Received file:", req.file); // Debugging file upload
-//     console.log("User ID:", req.userId); // Debugging userId
-
-//     // Ensure req.body exists before calling the service
-//     if (!req.body) {
-//       return res.status(400).json({ error: "Request body is missing" });
-//     }
-
-//     // Pass the userId, req.body, and req.file to the service
-//     const user = await authService.editProfile(req.userId, req.body, req.file);
-
-//     res.status(200).json({ message: "User details edited successfully", user });
-//   } catch (error) {
-//     console.error("Edit Profile Error:", error);
-//     res
-//       .status(400)
-//       .json({ error: error.message || "An unknown error occurred" });
-//   }
-// };
-
-// authController.js
 exports.editProfile = async (req, res) => {
   try {
     console.log("Received body:", req.body); // Debugging

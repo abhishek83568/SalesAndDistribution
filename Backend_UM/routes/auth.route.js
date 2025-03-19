@@ -9,7 +9,18 @@ const upload = require("../utils/multer");
 router.get("/get-user", authenticate, authController.getUser);
 
 // Registration endpoint
-router.post("/register", authController.register);
+// router.post("/register", authController.register);
+
+// Email OTP routes
+router.post("/send-email-otp", authController.sendEmailOtp);
+router.post("/verify-email-otp", authController.verifyEmailOtp);
+
+// Phone OTP routes
+// router.post("/send-phone-otp", authController.sendPhoneOtp);
+// router.post("/verify-phone-otp", authController.verifyPhoneOtp);
+
+// User Registration
+router.post("/register", authController.registerUser);
 
 // Login endpoint
 router.post("/login", authController.login);

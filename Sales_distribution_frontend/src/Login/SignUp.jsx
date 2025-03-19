@@ -1,87 +1,102 @@
 import "./login.css";
-import { useState } from "react";
 import galvinusLogo from "../assets/galvinus_logo.jpeg";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
 
 const SignUp = () => {
   const navigate = useNavigate();
+
   const [register, setRegister] = useState({
     name: "",
     email: "",
     phoneNumber: "",
     password: "",
   });
-  const [emailError, setEmailError] = useState("");
-  const [error, setError] = useState(""); // State to store error message
 
-  const validateEmail = (email) => {
-    const emailRegex =
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|net|org|gov|edu|co)$/;
-    return emailRegex.test(email);
-  };
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [showEmailOTPInput, setShowEmailOTPInput] = useState(false);
+  const [emailOTP, setEmailOTP] = useState("");
 
   const handleChange = (e) => {
     const { value, name } = e.target;
-
-    setRegister((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setError(""); // Clear error when typing
-    setEmailError("");
+    setRegister((prev) => ({ ...prev, [name]: value }));
   };
 
+  // 🔹 Send Email OTP
+  const sendEmailVerification = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8799/api/auth/send-email-otp",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: register.email }),
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to send OTP");
+
+      setShowEmailOTPInput(true);
+      toast.success("OTP sent to email!");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // 🔹 Verify Email OTP
+  const verifyEmailOTP = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8799/api/auth/verify-email-otp",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: register.email, otp: emailOTP }),
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Invalid OTP");
+
+      setEmailVerified(true);
+      setShowEmailOTPInput(false);
+      toast.success("Email verified!");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // 🔹 Register User
   const registerUser = async (event) => {
     event.preventDefault();
-    // Validate email format before sending request
-    if (!validateEmail(register.email)) {
-      setEmailError(
-        "Please enter a valid email address ending with .com, .in, .org, etc."
-      );
+
+    if (!emailVerified) {
+      toast.error("Please verify email first.");
       return;
-    } else {
-      setEmailError(""); // Clear error if email is valid
     }
 
     try {
       const response = await fetch("http://localhost:8799/api/auth/register", {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          name: register.name,
-          email: register.email,
-          password: register.password,
-          phoneNumber: register.phoneNumber,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(register),
       });
 
       const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Registration failed");
 
-      if (!response.ok) {
-        throw new Error(data.error || "Registration failed");
-      }
       toast.success("User registered successfully!");
-      setRegister({
-        name: "",
-        email: "",
-        phoneNumber: "",
-        password: "",
-      });
-      setError(""); // Clear error after successful signup
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
+      setTimeout(() => navigate("/login"), 1500);
     } catch (error) {
-      setError(error.message); // Set error message from backend
+      toast.error(error.message);
     }
   };
 
   return (
     <div className="auth-form">
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="top-center" />
       <div className="logo-box">
         <img src={galvinusLogo} alt="galvinus-logo" />
       </div>
@@ -96,15 +111,39 @@ const SignUp = () => {
           onChange={handleChange}
           required
         />
-        <input
-          type="email"
-          placeholder="Email"
-          name="email"
-          value={register.email}
-          onChange={handleChange}
-          required
-        />
-        {emailError && <p className="error-message">{emailError}</p>}
+
+        <div className="input-group">
+          <input
+            type="email"
+            placeholder="Email"
+            name="email"
+            value={register.email}
+            onChange={handleChange}
+            required
+          />
+          <button
+            type="button"
+            onClick={sendEmailVerification}
+            disabled={emailVerified}
+          >
+            {emailVerified ? "✅ Verified" : "Verify Email"}
+          </button>
+        </div>
+
+        {showEmailOTPInput && (
+          <div className="otp-input">
+            <input
+              type="text"
+              placeholder="Enter Email OTP"
+              value={emailOTP}
+              onChange={(e) => setEmailOTP(e.target.value)}
+            />
+            <button type="button" onClick={verifyEmailOTP}>
+              Verify
+            </button>
+          </div>
+        )}
+
         <input
           type="password"
           placeholder="Password"
@@ -113,19 +152,21 @@ const SignUp = () => {
           onChange={handleChange}
           required
         />
-        {/* Show error message below password field */}
-        {error && <p className="error-message">{error}</p>}
 
-        <input
-          type="Number"
-          placeholder="Phone Number"
-          name="phoneNumber"
-          value={register.phoneNumber}
-          onChange={handleChange}
-          required
-        />
+        <div className="input-group">
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            name="phoneNumber"
+            value={register.phoneNumber}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
         <button type="submit">Sign Up</button>
       </form>
+
       <p>
         Already have an account? <a href="login">Login</a>
       </p>

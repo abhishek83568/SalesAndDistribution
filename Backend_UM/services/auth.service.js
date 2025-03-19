@@ -3,6 +3,8 @@ const prisma = new PrismaClient();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const otpGenerator = require("otp-generator");
+const nodemailer = require("nodemailer");
 const { sendPasswordResetEmail } = require("./emailService");
 const cloudinary = require("../utils/cloudinary");
 
@@ -15,43 +17,95 @@ const REFRESH_TOKEN_SECRET =
 // In-memory storage for refresh tokens (for demonstration only)
 let refreshTokens = [];
 
-exports.register = async ({ name, email, password, phoneNumber }) => {
-  // Validate password strength
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  if (!passwordRegex.test(password)) {
-    throw new Error(
-      "Password must be at least 8 characters, one uppercase letter,lowercase letter,number, and a special character."
-    );
-  }
+// exports.register = async ({ name, email, password, phoneNumber }) => {
+//   // Validate password strength
+//   const passwordRegex =
+//     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+//   if (!passwordRegex.test(password)) {
+//     throw new Error(
+//       "Password must be at least 8 characters, one uppercase letter,lowercase letter,number, and a special character."
+//     );
+//   }
 
-  const emailRegex =
-    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|net|org|gov|edu|co)$/;
-  if (!emailRegex.test(email)) {
-    throw new Error(
-      "Invalid email format. Email must end with .com, .in, .org, etc."
-    );
-  }
+//   const emailRegex =
+//     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|net|org|gov|edu|co)$/;
+//   if (!emailRegex.test(email)) {
+//     throw new Error(
+//       "Invalid email format. Email must end with .com, .in, .org, etc."
+//     );
+//   }
 
-  // Check if the user already exists
+//   // Check if the user already exists
+//   const existingUser = await prisma.user.findUnique({ where: { email } });
+//   if (existingUser) {
+//     throw new Error("User already exists");
+//   }
+//   // Hash the password
+//   const hashedPassword = await bcrypt.hash(password, 10);
+//   // Create and return the new user
+//   const user = await prisma.user.create({
+//     data: {
+//       name,
+//       email,
+//       password: hashedPassword,
+//       phoneNumber,
+//     },
+//   });
+//   return user;
+// };
+const otpStore = new Map(); // Store OTPs temporarily
+
+exports.sendEmailOtp = async (email) => {
+  const otp = otpGenerator.generate(6, {
+    digits: true,
+    alphabets: false,
+    specialChars: false,
+  });
+  otpStore.set(email, otp);
+
+  // Send email using nodemailer
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Your OTP Code",
+    text: `Your OTP code is ${otp}`,
+  });
+
+  return { message: "OTP sent to email" };
+};
+
+exports.verifyEmailOtp = async (email, otp) => {
+  if (otpStore.get(email) === otp) {
+    otpStore.delete(email);
+    return { message: "Email verified successfully" };
+  }
+  throw new Error("Invalid OTP");
+};
+
+exports.registerUser = async ({ name, email, password, phoneNumber }) => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) {
-    throw new Error("User already exists");
-  }
-  // Hash the password
+  if (existingUser) throw new Error("User already exists");
+
   const hashedPassword = await bcrypt.hash(password, 10);
-  // Create and return the new user
-  const user = await prisma.user.create({
+  return await prisma.user.create({
     data: {
       name,
       email,
       password: hashedPassword,
       phoneNumber,
+      emailVerified: true,
+      phoneVerified: true,
     },
   });
-  return user;
 };
-
 exports.login = async ({ email, password }) => {
   // Find the user by email
   const user = await prisma.user.findUnique({ where: { email } });
@@ -164,93 +218,6 @@ exports.resetPassword = async ({ token, newPassword }) => {
 
   return { message: "Password reset successfully" };
 };
-
-// exports.editProfile = async (userId, body, file) => {
-//   try {
-//     const { name, phoneNumber, email } = body; // Extract name and phoneNumber
-
-//     // Fetch the existing user to keep required fields
-//     const existingUser = await prisma.user.findUnique({
-//       where: { userId },
-//       select: {
-//         email: true,
-//         password: true,
-//         profilePic: true,
-//         name: true,
-//         phoneNumber: true,
-//       },
-//     });
-
-//     if (!existingUser) {
-//       throw new Error("User not found");
-//     }
-
-//     // Prepare update data (only include fields that are provided)
-//     const updateData = {
-//       name: name || existingUser.name, // Keep old name if not provided
-//       phoneNumber: phoneNumber || existingUser.phoneNumber, // Keep old phoneNumber if not provided
-//       profilePic: file ? `/uploads/${file.filename}` : existingUser.profilePic, // Preserve existing profilePic if no new file
-//       email: email || existingUser.email, // Preserve email
-//       password: existingUser.password, // Preserve password
-//     };
-
-//     // Perform the update
-//     const updatedUser = await prisma.user.update({
-//       where: { userId },
-//       data: updateData,
-//     });
-
-//     return updatedUser;
-//   } catch (error) {
-//     throw new Error(error.message);
-//   }
-// };
-// exports.editProfile = async (userId, body, file) => {
-//   try {
-//     const { name, phoneNumber, email } = body;
-
-//     // Fetch existing user details
-//     const existingUser = await prisma.user.findUnique({
-//       where: { userId },
-//       select: {
-//         email: true,
-//         password: true,
-//         profilePic: true,
-//         name: true,
-//         phoneNumber: true,
-//       },
-//     });
-
-//     if (!existingUser) {
-//       throw new Error("User not found");
-//     }
-
-//     // Determine new profile picture URL
-//     let profilePicUrl = existingUser.profilePic;
-//     if (file) {
-//       profilePicUrl = `/uploads/${file.filename}`;
-//     }
-
-//     // Prepare update data (only include fields that are provided)
-//     const updateData = {
-//       name: name || existingUser.name,
-//       phoneNumber: phoneNumber || existingUser.phoneNumber,
-//       profilePic: profilePicUrl, // Save local path or cloud URL
-//       email: existingUser.email, // Preserve email
-//       password: existingUser.password, // Preserve password
-//     };
-
-//     // Perform update
-//     const updatedUser = await prisma.user.update({
-//       where: { userId },
-//       data: updateData,
-//     });
-
-//     return updatedUser;
-//   } catch (error) {
-//     throw new Error(error.message);
-//   }
-// };
 
 exports.editProfile = async (userId, body, file) => {
   try {
