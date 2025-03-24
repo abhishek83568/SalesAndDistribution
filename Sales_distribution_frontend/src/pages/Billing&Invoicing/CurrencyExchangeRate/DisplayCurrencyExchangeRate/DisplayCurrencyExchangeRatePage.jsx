@@ -120,7 +120,7 @@ export default function DisplayCurrencyExchangeRatePage() {
               </div>
             </div>
 
-            <button type="submit" disabled={loading}>
+            <button type="submit" disabled={loading} className="edit-btn">
               {loading ? "Loading..." : "Submit"}
             </button>
           </form>

@@ -200,7 +200,7 @@ export default function CreatePaymentForm() {
           </div>
 
           {/* Submit Button */}
-          <button type="submit" className="submit-btn" disabled={loading}>
+          <button type="submit" className="edit-btn" disabled={loading}>
             {loading ? "Processing..." : "Create Payment"}
           </button>
         </form>

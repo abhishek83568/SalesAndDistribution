@@ -193,7 +193,9 @@ export default function CreateInvoiceForm() {
             </div>
           </div>
 
-          <button type="submit">Create Invoice</button>
+          <button type="submit" className="edit-btn">
+            Create Invoice
+          </button>
         </form>
       </div>
     </div>

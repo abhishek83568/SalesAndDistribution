@@ -66,6 +66,7 @@ export default function DisplayShipmentPage() {
         setFormData((prev) => ({
           ...prev,
           shipmentId: "",
+          orderId: "",
         }));
       }
     } catch (error) {
@@ -112,7 +113,9 @@ export default function DisplayShipmentPage() {
                 />
               </div>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit" className="edit-btn">
+              Submit
+            </button>
           </form>
         </div>
       </div>

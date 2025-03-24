@@ -102,7 +102,9 @@ export default function DisplayProductMovementPage() {
                 />
               </div>
             </div>
-            <button type="submit">Submit</button>
+            <button className="edit-btn" type="submit">
+              Submit
+            </button>
           </form>
         </div>
       </div>

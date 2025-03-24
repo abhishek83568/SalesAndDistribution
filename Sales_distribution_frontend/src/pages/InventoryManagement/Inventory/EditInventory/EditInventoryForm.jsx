@@ -258,7 +258,9 @@ export default function EditInventoryForm() {
                 </div>
               </div>
             </div>
-            <button type="submit">Submit Edit</button>
+            <button type="submit" className="edit-btn">
+              Submit Edit
+            </button>
           </form>
         </div>
       </div>

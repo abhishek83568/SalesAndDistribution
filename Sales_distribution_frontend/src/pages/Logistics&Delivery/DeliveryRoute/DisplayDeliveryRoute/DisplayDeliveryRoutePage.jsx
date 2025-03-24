@@ -120,7 +120,9 @@ export default function DisplayDeliveryRoutePage() {
                 />
               </div>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit" className="edit-btn">
+              Submit
+            </button>
           </form>
         </div>
       </div>

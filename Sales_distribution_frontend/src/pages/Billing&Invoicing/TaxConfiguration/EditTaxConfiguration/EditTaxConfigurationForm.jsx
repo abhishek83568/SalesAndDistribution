@@ -193,7 +193,9 @@ export default function EditTaxConfigurationForm() {
                 </div>
               </div>
             </div>
-            <button type="submit">Submit Changes</button>
+            <button type="submit" className="edit-btn">
+              Submit Edit
+            </button>
           </form>
         </div>
       </div>

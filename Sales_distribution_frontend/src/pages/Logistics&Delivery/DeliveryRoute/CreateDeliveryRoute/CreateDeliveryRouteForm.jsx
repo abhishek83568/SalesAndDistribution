@@ -218,7 +218,11 @@ export default function CreateDeliveryRouteForm() {
             </div>
           </div>
 
-          <button type="submit" disabled={!!errors.distance}>
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={!!errors.distance}
+          >
             Submit
           </button>
         </form>

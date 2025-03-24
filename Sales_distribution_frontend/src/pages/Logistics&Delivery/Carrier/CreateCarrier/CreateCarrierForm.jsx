@@ -211,7 +211,11 @@ export default function CreateCarrierForm() {
               </div>
             </div>
           </div>
-          <button type="submit" disabled={!!errors.contactDetails}>
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={!!errors.contactDetails}
+          >
             Submit
           </button>
         </form>

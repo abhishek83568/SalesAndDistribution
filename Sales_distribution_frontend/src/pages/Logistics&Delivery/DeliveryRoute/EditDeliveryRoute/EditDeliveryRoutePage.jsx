@@ -104,7 +104,9 @@ const EditDeliveryRoutePage = () => {
                 />
               </div>
             </div>
-            <button type="submit">Edit</button>
+            <button type="submit" className="edit-btn">
+              Edit
+            </button>
           </form>
         </div>
       </div>

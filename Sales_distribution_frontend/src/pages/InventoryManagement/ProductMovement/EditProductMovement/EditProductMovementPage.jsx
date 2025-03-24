@@ -89,7 +89,9 @@ const EditProductMovementPage = () => {
                 />
               </div>
             </div>
-            <button>Edit</button>
+            <button className="edit-btn" type="submit">
+              Edit
+            </button>
           </form>
         </div>
       </div>

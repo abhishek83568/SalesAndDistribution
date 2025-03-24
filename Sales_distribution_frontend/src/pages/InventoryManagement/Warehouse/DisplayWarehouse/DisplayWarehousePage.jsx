@@ -55,6 +55,7 @@ export default function DisplayWarehousePage() {
         alert(`Error fetching warehouse :${data.error}`);
         setFormData({
           warehouseId: "",
+          inventoryId: "",
         });
       }
     } catch (error) {
@@ -100,7 +101,9 @@ export default function DisplayWarehousePage() {
                 />
               </div>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit" className="edit-btn">
+              Submit
+            </button>
           </form>
         </div>
       </div>

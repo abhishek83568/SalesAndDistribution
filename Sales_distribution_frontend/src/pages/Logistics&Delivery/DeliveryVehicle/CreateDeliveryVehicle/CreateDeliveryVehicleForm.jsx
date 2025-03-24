@@ -223,7 +223,9 @@ export default function CreateDeliveryVehicleForm() {
             </div>
           </div>
 
-          <button type="submit">Create Vehicle</button>
+          <button type="submit" className="submit-btn">
+            Create Vehicle
+          </button>
         </form>
       </div>
     </div>

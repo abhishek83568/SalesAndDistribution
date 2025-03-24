@@ -101,7 +101,9 @@ const EditShipmentPage = () => {
                 />
               </div>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit" className="edit-btn">
+              Edit
+            </button>
           </form>
         </div>
       </div>

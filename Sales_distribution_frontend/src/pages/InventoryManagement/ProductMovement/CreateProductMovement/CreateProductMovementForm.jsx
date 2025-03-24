@@ -96,6 +96,7 @@ export default function CreateProductMovementForm() {
 
       if (response.ok) {
         console.log("Product movement created successfully:", data);
+        alert(`${data.message} + ${data.alert == null ? "" : data.alert}`);
         setFormData({
           movementId: "",
           inventoryId: "",
@@ -258,7 +259,9 @@ export default function CreateProductMovementForm() {
             </div>
           </div>
 
-          <button type="submit">Submit</button>
+          <button className="submit-btn" type="submit">
+            Submit
+          </button>
         </form>
       </div>
     </div>

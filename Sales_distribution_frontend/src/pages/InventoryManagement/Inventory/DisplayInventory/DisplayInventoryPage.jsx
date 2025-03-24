@@ -85,10 +85,10 @@ const DisplayInventoryPage = () => {
                   required
                 />
               </div>
-              <div>
-                <button type="submit">Submit</button>
-              </div>
             </div>
+            <button className="edit-btn" type="submit">
+              Submit
+            </button>
           </form>
         </div>
       </div>

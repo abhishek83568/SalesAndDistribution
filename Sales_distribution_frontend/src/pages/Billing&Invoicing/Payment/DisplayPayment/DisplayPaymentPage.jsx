@@ -109,7 +109,9 @@ export default function DisplayPaymentPage() {
                 />
               </div>
             </div>
-            <button type="submit">Display</button>
+            <button type="submit" className="edit-btn">
+              Display
+            </button>
           </form>
         </div>
       </div>

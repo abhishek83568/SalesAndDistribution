@@ -86,7 +86,9 @@ const EditInventoryPage = () => {
                 />
               </div>
             </div>
-            <button type="submit">Edit</button>
+            <button className="edit-btn" type="submit">
+              Edit
+            </button>
           </form>
         </div>
       </div>

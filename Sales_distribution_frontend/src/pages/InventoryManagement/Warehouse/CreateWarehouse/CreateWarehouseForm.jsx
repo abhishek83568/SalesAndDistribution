@@ -235,7 +235,11 @@ export default function CreateWarehouseForm() {
             </div>
           </div>
 
-          <button type="submit" disabled={!isFormValid()}>
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={!isFormValid()}
+          >
             Submit
           </button>
         </form>

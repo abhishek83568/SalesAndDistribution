@@ -229,7 +229,9 @@ export default function EditInvoiceForm() {
               </div>
             </div>
 
-            <button type="submit">Submit</button>
+            <button type="submit" className="edit-btn">
+              Submit Edit
+            </button>
           </form>
         </div>
       </div>

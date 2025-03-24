@@ -202,7 +202,9 @@ export default function EditCurrencyExchangeRateForm() {
               </div>
             </div>
 
-            <button type="submit">Save</button>
+            <button type="submit" className="edit-btn">
+              Submit Edit
+            </button>
           </form>
         </div>
       </div>

@@ -17,42 +17,6 @@ const REFRESH_TOKEN_SECRET =
 // In-memory storage for refresh tokens (for demonstration only)
 let refreshTokens = [];
 
-// exports.register = async ({ name, email, password, phoneNumber }) => {
-//   // Validate password strength
-//   const passwordRegex =
-//     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-//   if (!passwordRegex.test(password)) {
-//     throw new Error(
-//       "Password must be at least 8 characters, one uppercase letter,lowercase letter,number, and a special character."
-//     );
-//   }
-
-//   const emailRegex =
-//     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|net|org|gov|edu|co)$/;
-//   if (!emailRegex.test(email)) {
-//     throw new Error(
-//       "Invalid email format. Email must end with .com, .in, .org, etc."
-//     );
-//   }
-
-//   // Check if the user already exists
-//   const existingUser = await prisma.user.findUnique({ where: { email } });
-//   if (existingUser) {
-//     throw new Error("User already exists");
-//   }
-//   // Hash the password
-//   const hashedPassword = await bcrypt.hash(password, 10);
-//   // Create and return the new user
-//   const user = await prisma.user.create({
-//     data: {
-//       name,
-//       email,
-//       password: hashedPassword,
-//       phoneNumber,
-//     },
-//   });
-//   return user;
-// };
 const otpStore = new Map(); // Store OTPs temporarily
 
 exports.sendEmailOtp = async (email) => {
@@ -93,6 +57,22 @@ exports.verifyEmailOtp = async (email, otp) => {
 exports.registerUser = async ({ name, email, password, phoneNumber }) => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) throw new Error("User already exists");
+
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    throw new Error(
+      "Password must be at least 8 characters, one uppercase letter,lowercase letter,number, and a special character."
+    );
+  }
+
+  const emailRegex =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|net|org|gov|edu|co)$/;
+  if (!emailRegex.test(email)) {
+    throw new Error(
+      "Invalid email format. Email must end with .com, .in, .org, etc."
+    );
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
   return await prisma.user.create({
@@ -241,7 +221,6 @@ exports.editProfile = async (userId, body, file) => {
     // Use Cloudinary URL if a new file is uploaded
     let profilePicUrl = existingUser.profilePic;
     if (file) {
-      console.log("Uploaded file:", file); // Debugging Cloudinary response
       profilePicUrl = file.path; // Cloudinary provides a public URL in 'path'
     }
 

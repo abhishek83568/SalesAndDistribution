@@ -206,7 +206,9 @@ export default function EditShipmentForm() {
               </div>
             </div>
 
-            <button type="submit">Save Changes</button>
+            <button type="submit" className="edit-btn">
+              Submit Edit
+            </button>
           </form>
         </div>
       </div>

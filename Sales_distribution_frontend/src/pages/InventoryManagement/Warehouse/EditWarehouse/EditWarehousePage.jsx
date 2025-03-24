@@ -88,10 +88,10 @@ const EditWarehousePage = () => {
                   required
                 />
               </div>
-              <div>
-                <button type="submit">Edit</button>
-              </div>
             </div>
+            <button className="edit-btn" type="submit">
+              Edit
+            </button>
           </form>
         </div>
       </div>

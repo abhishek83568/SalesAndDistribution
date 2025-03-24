@@ -114,7 +114,9 @@ export default function DisplayCarrierPage() {
                 />
               </div>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit" className="edit-btn">
+              Submit
+            </button>
           </form>
         </div>
       </div>
